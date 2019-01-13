@@ -51,8 +51,9 @@ local work = function()
     f:close()
     return tbl;
   end
-
-  readConfig("/etc/w3dprinter.cfg")
+  local fii = io.open("cfgtmp.txt","w")
+  fii:write(ser.serialize(readConfig("/etc/w3dprinter.cfg")))
+  fii:close()
 
   --[[local proxy = {
   	test = function(something) return type(something) end
