@@ -31,22 +31,28 @@ local work = function()
     local done,fil = pcall(fs.open,file,"r");
     local f = io.open("file1.txt","w")
     f:write(tostring(done).." - "..tostring(fil))
-    f:close()
-    if(done == nil) then
-      writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
+    if not (done) then
+      writeToFile(file,getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client"..file))
+      f:write("\nWRONG")
+      f:close()
       return readConfig(file);
     end
+    f:close()
     local content = fil:read("*a")
     local don,tbl = pcall(ser.unserialize,content)
     f = io.open("file2.txt","w")
     f:write(tostring(don).." - "..tostring(tbl))
-    f:close()
     if(don == nil) then
-      writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
+      writeToFile(file,getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client"..file))
+      f:write("\nWRONG")
+      f:close()
       return readConfig(file);
     end
-    return tbl;
+    f:close()
+    return don;
   end
+
+  readConfig("/etc/w3dprinter.cfg")
 
   --[[local proxy = {
   	test = function(something) return type(something) end
