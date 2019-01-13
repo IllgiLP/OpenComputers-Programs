@@ -29,13 +29,19 @@ end
 local work = function()
   local function readConfig(file)
     local done,fil = pcall(fs.open,file,"r");
-    if not (done) then
+    local f = io.open("file1.txt","w")
+    f:write(tostring(done).." - "..tostring(fil))
+    f:close()
+    if(done == nil) then
       writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
       return readConfig(file);
     end
     local content = fil:read("*a")
     local don,tbl = pcall(ser.unserialize,content)
-    if not (don) then
+    f = io.open("file2.txt","w")
+    f:write(tostring(don).." - "..tostring(tbl))
+    f:close()
+    if(don == nil) then
       writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
       return readConfig(file);
     end
