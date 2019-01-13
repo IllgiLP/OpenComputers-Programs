@@ -3,19 +3,40 @@ local ser = require("serialization")
 local fs = require("filesystem")
 local shell = require("shell")
 local event = require("event")
+local internet = require("internet")
+
+if(internet == nil) then
+  return;
+end
+local function getContent(url)
+  local sContent = ""
+  local result, response = pcall(internet.request, url)
+  if not result then
+    return nil
+  end
+  for chunk in response do
+    sContent = sContent..chunk
+  end
+  return sContent
+end
+
+local function writeToFile(file,content)
+  local fil = fs.open(file,"w")
+  fil:write(content)
+  file:close()
+end
 
 local work = function()
   local function readConfig(file)
     local done,fil = pcall(fs.open,file,"r");
     if not (done) then
-      shell.execute("wget -f https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg /etc/w3dprinter.cfg")
+      writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
       return readConfig(file);
     end
     local content = fil:read("*a")
     local don,tbl = pcall(ser.unserialize,content)
-    print("HIIIIIIII")
     if not (don) then
-      shell.execute("wget -f https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg /etc/w3dprinter.cfg")
+      writeToFile("/etc/w3dprinter.cfg",getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client/etc/w3dprinter.cfg"))
       return readConfig(file);
     end
     return tbl;
