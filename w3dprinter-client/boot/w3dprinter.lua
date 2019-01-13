@@ -28,7 +28,7 @@ end
 
 local work = function()
   local function readConfig(file)
-    local done,fil = pcall(fs.open,file,"r");
+    local done,fil = pcall(io.open,file,"r");
     local f = io.open("file1.txt","w")
     f:write(tostring(done).." - "..tostring(fil))
     if not (done) then
@@ -42,14 +42,14 @@ local work = function()
     local don,tbl = pcall(ser.unserialize,content)
     f = io.open("file2.txt","w")
     f:write(tostring(don).." - "..tostring(tbl))
-    if(don == nil) then
+    if(don == nil or tbl == nil) then
       writeToFile(file,getContent("https://raw.githubusercontent.com/IllgiLP/OpenComputers-Programs/master/w3dprinter-client"..file))
       f:write("\nWRONG")
       f:close()
       return readConfig(file);
     end
     f:close()
-    return don;
+    return tbl;
   end
 
   readConfig("/etc/w3dprinter.cfg")
