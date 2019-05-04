@@ -21,7 +21,7 @@ local renderTask = function()
   count = count +1
 end
 
-local function setupGPU() then
+local function setupGPU() 
   local graphics = config.graphics
   compo.setPrimary("gpu",compo.get(graphics.primaryGPU))
   local gpuScreens = graphics.gpuScreens
