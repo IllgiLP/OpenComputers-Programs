@@ -33,6 +33,7 @@ local function setupGPU()
     if(k ~= graphics.primaryGPU) then
       local x,y = cgpu.getResolution()
       cgpu.fill(1,1,x,y," ")
+      cgpu.setResolution(40,20)
       gpu = cgpu
     end
   end
