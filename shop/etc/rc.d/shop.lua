@@ -1,6 +1,6 @@
 local event = require("event")
 
-local timerId = nil
+local shop = loadfile("/program_files/shop/shop.lua")()
 
 function start()
   if(timerId ~= nil) then
@@ -8,7 +8,12 @@ function start()
   else
     timerId = event.timer(0.5,function()
       print("HI")
-     end)
+    end,math.huge)
+  end
+  if(shop.isRunning()) then
+    print("Already started!")
+  else
+    shop.start()
   end
 end
 
@@ -19,10 +24,15 @@ function stop()
     event.cancel(timerId)
     timerId = nil
   end
+  if not (shop.isRunning()) then
+    print("Not running!")
+  else
+    shop.stop()
+  end
 end
 
 function status()
-    if(timerId ~= nil) then
+    if(shop.isRunning()) then
       print("Status: running")
     else
       print("Status: stopped")
@@ -30,7 +40,7 @@ function status()
 end
 
 function restart()
-  if(timerId == nil) then
+  if not (shop.isRunning()) then
     print("Not running!")
   else
     stop()
