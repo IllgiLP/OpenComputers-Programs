@@ -4,6 +4,7 @@ local timerId = nil
 
 local ser = require("serialization")
 local compo = require("component")
+local event = require("event")
 
 local function parseFile(file)
   local file = io.open(file,"r")
@@ -21,7 +22,7 @@ local renderTask = function()
   count = count +1
 end
 
-local function setupGPU() 
+local function setupGPU()
   local graphics = config.graphics
   compo.setPrimary("gpu",compo.get(graphics.primaryGPU))
   local gpuScreens = graphics.gpuScreens

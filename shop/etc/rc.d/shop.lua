@@ -1,5 +1,3 @@
-local event = require("event")
-
 local shop = loadfile("/program_files/shop/shop.lua")()
 
 function start()
