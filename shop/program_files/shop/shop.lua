@@ -13,6 +13,12 @@ local itemtSides = {hopper = -1, dispenser = -1, chest = -1}
 
 local money = {}
 
+local items = {}
+
+local screen = {w=40,h=20}
+
+local selectedItem = 0
+
 local function parseFile(file)
   local file = io.open(file,"r")
   return ser.unserialize(file:read("*a"))
@@ -28,7 +34,24 @@ local update = function()
   local stack = itemt.getStackInSlot(itemtSides.hopper,1)
   local x,y = gpu.getResolution()
   gpu.fill(1,1,x,y," ")
-  if(stack ~= nil) then
+
+
+  for k,v in pairs(items) do
+    gpu.setBackground(0x000000)
+    if not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount)) then
+      gpu.setBackground(0xFF0000)
+      gpu.fill(1,k,screen.w,k," ")
+    end
+    gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name))
+
+    local costString = v.cost.amount.." "..money[v.cost.type].short
+
+    gpu.setForeground(money[v.cost.type].color)
+    gpu.set((screen.w)-(#costString+1),k,costString)
+    gpu.setForeground(0xFFFFFF)
+  end
+
+  --[[if(stack ~= nil) then
     if(money[stack.name] ~= nil) then
       gpu.setForeground(money[stack.name].color)
       gpu.set(1,1,stack.size.." "..money[stack.name].short)
@@ -38,7 +61,7 @@ local update = function()
     end
   else
     gpu.set(1,1,"Kein Item!")
-  end
+  end]]--
 end
 
 local task = function()
@@ -66,6 +89,13 @@ local function setupMoney()
   end
 end
 
+local function setupItems()
+  local cit = config.shop.items
+  for k,v in pairs(cit) do
+    items[k] = v
+  end
+end
+
 local function setupGPU()
   local graphics = config.graphics
   compo.setPrimary("gpu",compo.get(graphics.primaryGPU))
@@ -77,7 +107,7 @@ local function setupGPU()
     if(k ~= graphics.primaryGPU) then
       local x,y = cgpu.getResolution()
       cgpu.fill(1,1,x,y," ")
-      cgpu.setResolution(40,20)
+      cgpu.setResolution(screen.w,screen.h)
       gpu = cgpu
     end
   end
