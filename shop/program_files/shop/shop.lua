@@ -20,6 +20,8 @@ local screen = {w=40,h=20}
 
 local selectedItem = 0
 
+local gpu = nil
+
 local function parseFile(file)
   local file = io.open(file,"r")
   return ser.unserialize(file:read("*a"))
@@ -33,6 +35,7 @@ local buttons = {
     x=21,
     y=20,
     func = function()
+      gpu.set(1,19,"Bitte warten...")
       local stack = itemt.getStackInSlot(itemtSides.hopper,1)
       if(stack ~= nil) then
         if(selectedItem > 0) then
@@ -49,6 +52,7 @@ local buttons = {
     x=30,
     y=20,
     func = function()
+      gpu.set(1,19,"Bitte warten...")
       local stack = itemt.getStackInSlot(itemtSides.hopper,1)
       if(stack ~= nil) then
         itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
@@ -57,13 +61,10 @@ local buttons = {
   }
 }
 
-
-local gpu = nil
-
 local update = function()
   for k,v in pairs(items) do
-    local tpp = fluidts[items[selectedItem].tp.id]
-    local level = tpp.getTankLevel(sides[items[selectedItem].tp.side],1)
+    local tpp = fluidts[v.tp.id]
+    local level = tpp.getTankLevel(sides[v.tp.side],1)
     if(level >= config.shop.setup.fluid.glassSize) then
       v.enough = true
     else
@@ -73,7 +74,10 @@ local update = function()
 end
 
 local task = function()
-  update()
+  local ok, msg = xpcall(update)
+  if not (ok) then
+    print("Error in update: "..msg)
+  end
   local stack = itemt.getStackInSlot(itemtSides.hopper,1)
   local x,y = gpu.getResolution()
   gpu.setBackground(0x000000)
