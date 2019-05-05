@@ -35,6 +35,11 @@ local update = function()
   local x,y = gpu.getResolution()
   gpu.fill(1,1,x,y," ")
 
+  if(stack == nil) then
+    stack = {}
+    stack.name = "minecraft:air"
+    stack.size = 0
+  end
 
   for k,v in pairs(items) do
     gpu.setBackground(0x000000)
@@ -68,6 +73,8 @@ local task = function()
   local ok, msg = xpcall(update)
   if not (ok) then
     print("Error: "..msg)
+  else
+    print("OK")
   end
 end
 
@@ -123,6 +130,7 @@ func.start = function()
     setupGPU()
     setupTransposers()
     setupMoney()
+    setupItems()
     timerId = event.timer(0.5,task,math.huge)
     return true
   end
