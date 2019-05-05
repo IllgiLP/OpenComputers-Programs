@@ -97,15 +97,6 @@ local update = function()
   for k,v in pairs(buttons) do
     gpu.set(v.x,v.y,v.name)
   end
-
-  if(stack ~= nil) then
-    if(money[stack.name] ~= nil) then
-    else
-      itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
-    end
-  else
-    gpu.set(1,1,"Kein Item!")
-  end]]--
 end
 
 local task = function()
