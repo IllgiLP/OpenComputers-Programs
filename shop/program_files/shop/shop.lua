@@ -203,7 +203,7 @@ func.start = function()
     setupTransposers()
     setupMoney()
     setupItems()
-    timerId = event.timer(0.1,task,math.huge)
+    timerId = event.timer(0.5,task,math.huge)
     event.listen("touch",onTouch)
     return true
   end
