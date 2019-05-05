@@ -65,7 +65,6 @@ local update = function()
   for k,v in pairs(items) do
     gpu.setBackground(0x000000)
     if not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount)) then
-      gpu.setBackground(0xFF0000)
       gpu.fill(1,k,screen.w,1," ")
       v.red = true
       if(k == selectedItem) then
@@ -77,7 +76,7 @@ local update = function()
     gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name))
 
     local costString = v.cost.amount.." "..money[v.cost.type].short
-
+    if(v.red) then gpu.setBackground(0xFF0000) end
     gpu.setForeground(money[v.cost.type].color)
     gpu.set((screen.w)-(#costString-1),k,costString)
     gpu.setForeground(0xFFFFFF)
