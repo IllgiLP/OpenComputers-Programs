@@ -87,7 +87,7 @@ local update = function()
   if(money[stack.name] ~= nil) then
     local costString = stack.size.." "..money[stack.name].short
 
-    gpu.setForeground(money[v.cost.type].color)
+    gpu.setForeground(money[stack.name].color)
     gpu.set((screen.w)-(#costString+1),19,costString)
     gpu.setForeground(0xFFFFFF)
   else
