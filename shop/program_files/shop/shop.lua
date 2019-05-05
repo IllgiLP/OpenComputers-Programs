@@ -47,6 +47,9 @@ local update = function()
     if not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount)) then
       gpu.setBackground(0xFF0000)
       gpu.fill(1,k,screen.w,1," ")
+      v.red = true
+    else
+      v.red = false
     end
     gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name))
 
@@ -74,6 +77,17 @@ local task = function()
   local ok, msg = xpcall(update)
   if not (ok) then
     print("Error: "..msg)
+  end
+end
+
+local onTouch = function(e,screen,x,y)
+  if(screen == gpu.getScreen()) then
+    if(y <= #items) then
+      local i = items[y]
+      if not (i.red) then
+        selectedItem = y
+      end
+    end
   end
 end
 
@@ -131,6 +145,7 @@ func.start = function()
     setupMoney()
     setupItems()
     timerId = event.timer(0.5,task,math.huge)
+    event.listen("touch",onTouch)
     return true
   end
 end
@@ -141,6 +156,7 @@ func.stop = function()
   else
     event.cancel(timerId)
     timerId = nil
+    event.ignore("touch",onTouch)
     return true
   end
 end
