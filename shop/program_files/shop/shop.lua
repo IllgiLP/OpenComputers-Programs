@@ -138,6 +138,7 @@ local onTouch = function(e,screen,x,y)
     if(y <= #items) then
       local i = items[y]
       if not (i.red) then
+        gpu.set(1,19,"Bitte warten...")
         selectedItem = y
       end
     else
