@@ -11,6 +11,8 @@ local fluidts = {}
 
 local itemtSides = {hopper = -1, dispenser = -1, chest = -1}
 
+local money = {}
+
 local function parseFile(file)
   local file = io.open(file,"r")
   return ser.unserialize(file:read("*a"))
@@ -27,7 +29,13 @@ local update = function()
   local x,y = gpu.getResolution()
   gpu.fill(1,1,x,y," ")
   if(stack ~= nil) then
-    gpu.set(1,1,stack.name.." - "..stack.size)
+    if(money[stack.name] ~= nil) then
+      gpu.setForeground(money[stack.name].color)
+      gpu.set(1,1,stack.size.." "..money[stack.name].short)
+      gpu.setForeground(0xFFFFFF)
+    else
+      itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
+    end
   else
     gpu.set(1,1,"Kein Item!")
   end
@@ -48,7 +56,14 @@ local function setupTransposers()
   for k,v in pairs(setup.itemTransposer) do
     itemtSides[k] = v
   end
+end
 
+local function setupMoney()
+  local setup = config.shop.setup
+
+  for k,v in pairs(setup.money) do
+    money[k] = v
+  end
 end
 
 local function setupGPU()
@@ -74,6 +89,7 @@ func.start = function()
   else
     setupGPU()
     setupTransposers()
+    setupMoney()
     timerId = event.timer(0.5,task,math.huge)
     return true
   end
