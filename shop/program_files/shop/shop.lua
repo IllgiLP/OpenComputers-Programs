@@ -19,14 +19,31 @@ local screen = {w=40,h=20}
 
 local selectedItem = 0
 
+local buttons = {
+  [1] = {
+    name = "[Kaufen]",
+    x=21,
+    y=20,
+    func = function()
+      print("Kaufen")
+    end
+  },
+  [2] = {
+    name = "[Abbrechen]",
+    x=30,
+    y=20,
+    func = function()
+      print("Abbrechen")
+    end
+  }
+}
+
 local function parseFile(file)
   local file = io.open(file,"r")
   return ser.unserialize(file:read("*a"))
 end
 
 local config = parseFile("/etc/shop.cfg")
-
-local count = 0
 
 local gpu = nil
 
@@ -48,6 +65,9 @@ local update = function()
       gpu.setBackground(0xFF0000)
       gpu.fill(1,k,screen.w,1," ")
       v.red = true
+      if(k == selectedItem) then
+        selectedItem = 0
+      end
     else
       v.red = false
     end
@@ -58,6 +78,14 @@ local update = function()
     gpu.setForeground(money[v.cost.type].color)
     gpu.set((screen.w)-(#costString+1),k,costString)
     gpu.setForeground(0xFFFFFF)
+  end
+
+  gpu.setBackground(0x000000)
+
+  gpu.fill(1,18,40,1,"_")
+
+  for k,v in pairs(buttons) do
+    gpu.set(v.x,v.y,v.name)
   end
 
   --[[if(stack ~= nil) then
@@ -86,6 +114,12 @@ local onTouch = function(e,screen,x,y)
       local i = items[y]
       if not (i.red) then
         selectedItem = y
+      end
+    else
+      for k,v in pairs(buttons) do
+        if(y == v.y and (x >= v.x) and (x <= (v.x+#v.name))) then
+          v.func()
+        end
       end
     end
   end
