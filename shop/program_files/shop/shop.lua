@@ -5,6 +5,7 @@ local timerId = nil
 local ser = require("serialization")
 local compo = require("component")
 local event = require("event")
+local sides = require("sides")
 
 local itemt = nil
 local fluidts = {}
@@ -19,6 +20,13 @@ local screen = {w=40,h=20}
 
 local selectedItem = 0
 
+local function parseFile(file)
+  local file = io.open(file,"r")
+  return ser.unserialize(file:read("*a"))
+end
+
+local config = parseFile("/etc/shop.cfg")
+
 local buttons = {
   [1] = {
     name = "[Kaufen]",
@@ -27,8 +35,12 @@ local buttons = {
     func = function()
       local stack = itemt.getStackInSlot(itemtSides.hopper,1)
       if(stack ~= nil) then
-        itemt.transferItem(itemtSides.hopper, itemtSides.chest, items[selectedItem].cost.amount)
-        itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
+        if(selectedItem > 0) then
+          itemt.transferItem(itemtSides.hopper, itemtSides.chest, items[selectedItem].cost.amount)
+          itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
+          local tpp = fluidts[items[selectedItem].tp.id]
+          tpp.transferFluid(sides[items[selectedItem].tp.side],sides.top,config.shop.setup.fluid.glassSize)
+        end
       end
     end
   },
@@ -45,12 +57,6 @@ local buttons = {
   }
 }
 
-local function parseFile(file)
-  local file = io.open(file,"r")
-  return ser.unserialize(file:read("*a"))
-end
-
-local config = parseFile("/etc/shop.cfg")
 
 local gpu = nil
 
