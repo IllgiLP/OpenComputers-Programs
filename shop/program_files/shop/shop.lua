@@ -6,6 +6,11 @@ local ser = require("serialization")
 local compo = require("component")
 local event = require("event")
 
+local itemt = nil
+local fluidts = {}
+
+local itemtSides = {hopper = -1, dispenser = -1, chest = -1}
+
 local function parseFile(file)
   local file = io.open(file,"r")
   return ser.unserialize(file:read("*a"))
@@ -17,9 +22,33 @@ local count = 0
 
 local gpu = nil
 
-local renderTask = function()
-  gpu.set(1,1,"LOL: "..count)
-  count = count +1
+local update = function()
+  local stack = itemt.getStackInSlot(itemtSides.hopper,1)
+  local x,y = gpu.getResolution()
+  gpu.fill(1,1,x,y," ")
+  if(stack ~= nil) then
+    gpu.set(1,1,stack.name.." - "..stack.size)
+  else
+    gpu.set(1,1,"Kein Item!")
+  end
+end
+
+local task = function()
+  update()
+end
+
+local function setupTransposers()
+  local setup = config.shop.setup
+  local transps = setup.transposers
+  itemt = compo.proxy(compo.get(transps.itemTransposer))
+  for k,v in pairs(transps.fluidTransposers) do
+    fluidts[k] = compo.proxy(compo.get(v))
+  end
+
+  for k,v in pairs(setup.itemTransposer) do
+    itemtSides[k] = v
+  end
+
 end
 
 local function setupGPU()
@@ -44,7 +73,8 @@ func.start = function()
     return false
   else
     setupGPU()
-    timerId = event.timer(0.5,renderTask,math.huge)
+    setupTransposers()
+    timerId = event.timer(0.5,task,math.huge)
     return true
   end
 end
