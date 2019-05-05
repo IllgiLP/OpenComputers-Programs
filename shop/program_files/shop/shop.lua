@@ -65,7 +65,10 @@ local update = function()
 end
 
 local task = function()
-  update()
+  local ok, msg = xpcall(update)
+  if not (ok) then
+    print("Error: "..msg)
+  end
 end
 
 local function setupTransposers()
