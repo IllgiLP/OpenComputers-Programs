@@ -61,6 +61,19 @@ local buttons = {
 local gpu = nil
 
 local update = function()
+  for k,v in pairs(items) do
+    local tpp = fluidts[items[selectedItem].tp.id]
+    local level = tpp.getTankLevel(sides[items[selectedItem].tp.side],1)
+    if(level >= config.shop.setup.fluid.glassSize) then
+      v.enough = true
+    else
+      v.enough = false
+    end
+  end
+end
+
+local task = function()
+  update()
   local stack = itemt.getStackInSlot(itemtSides.hopper,1)
   local x,y = gpu.getResolution()
   gpu.setBackground(0x000000)
@@ -74,7 +87,7 @@ local update = function()
 
   for k,v in pairs(items) do
     gpu.setBackground(0x000000)
-    if not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount)) then
+    if (not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount))) or not v.enough then
       gpu.fill(1,k,screen.w,1," ")
       v.red = true
       if(k == selectedItem) then
@@ -83,7 +96,7 @@ local update = function()
     else
       v.red = false
     end
-    gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name))
+    gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name..(v.enough and "" or " - Leer")))
 
     local costString = v.cost.amount.." "..money[v.cost.type].short
     if(v.red) then gpu.setBackground(0xFF0000) end
@@ -113,13 +126,6 @@ local update = function()
 
   for k,v in pairs(buttons) do
     gpu.set(v.x,v.y,v.name)
-  end
-end
-
-local task = function()
-  local ok, msg = xpcall(update)
-  if not (ok) then
-    print("Error: "..msg)
   end
 end
 
