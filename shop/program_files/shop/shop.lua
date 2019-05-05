@@ -84,15 +84,22 @@ local update = function()
 
   gpu.fill(1,18,40,1,"_")
 
+  if(money[stack.name] ~= nil) then
+    local costString = stack.size.." "..money[stack.name].short
+
+    gpu.setForeground(money[v.cost.type].color)
+    gpu.set((screen.w)-(#costString+1),19,costString)
+    gpu.setForeground(0xFFFFFF)
+  else
+    itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
+  end
+
   for k,v in pairs(buttons) do
     gpu.set(v.x,v.y,v.name)
   end
 
-  --[[if(stack ~= nil) then
+  if(stack ~= nil) then
     if(money[stack.name] ~= nil) then
-      gpu.setForeground(money[stack.name].color)
-      gpu.set(1,1,stack.size.." "..money[stack.name].short)
-      gpu.setForeground(0xFFFFFF)
     else
       itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
     end
@@ -178,7 +185,7 @@ func.start = function()
     setupTransposers()
     setupMoney()
     setupItems()
-    timerId = event.timer(0.5,task,math.huge)
+    timerId = event.timer(0.1,task,math.huge)
     event.listen("touch",onTouch)
     return true
   end
