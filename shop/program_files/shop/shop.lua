@@ -35,7 +35,7 @@ local buttons = {
     func = function()
       local stack = itemt.getStackInSlot(itemtSides.hopper,1)
       if(stack ~= nil) then
-        itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
+        itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
       end
     end
   }
@@ -79,7 +79,7 @@ local update = function()
     local costString = v.cost.amount.." "..money[v.cost.type].short
 
     gpu.setForeground(money[v.cost.type].color)
-    gpu.set((screen.w)-(#costString+1),k,costString)
+    gpu.set((screen.w)-(#costString-1),k,costString)
     gpu.setForeground(0xFFFFFF)
   end
 
@@ -95,11 +95,11 @@ local update = function()
   else
     costString = costString.."-"
     if(stack.size > 0) then
-      itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
+      itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
     end
   end
 
-  gpu.set((screen.w)-(#costString+1),19,costString)
+  gpu.set((screen.w)-(#costString-1),19,costString)
   gpu.setForeground(0xFFFFFF)
 
   for k,v in pairs(buttons) do
