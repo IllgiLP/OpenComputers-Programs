@@ -33,7 +33,10 @@ local buttons = {
     x=30,
     y=20,
     func = function()
-      print("Abbrechen")
+      local stack = itemt.getStackInSlot(itemtSides.hopper,1)
+      if(stack ~= nil) then
+        itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
+      end
     end
   }
 }
