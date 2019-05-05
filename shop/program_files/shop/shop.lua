@@ -23,7 +23,7 @@ local buttons = {
   [1] = {
     name = "[Kaufen]",
     x=21,
-    y=20,
+    y=19,
     func = function()
       print("Kaufen")
     end
@@ -31,7 +31,7 @@ local buttons = {
   [2] = {
     name = "[Abbrechen]",
     x=30,
-    y=20,
+    y=19,
     func = function()
       print("Abbrechen")
     end
@@ -82,7 +82,7 @@ local update = function()
 
   gpu.setBackground(0x000000)
 
-  gpu.fill(1,18,40,1,"_")
+  gpu.fill(1,17,40,1,"_")
 
   local costString = "Eingeworfen: "
 
@@ -94,7 +94,7 @@ local update = function()
     itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
   end
 
-  gpu.set((screen.w)-(#costString+1),19,costString)
+  gpu.set((screen.w)-(#costString+1),18,costString)
   gpu.setForeground(0xFFFFFF)
 
   for k,v in pairs(buttons) do
