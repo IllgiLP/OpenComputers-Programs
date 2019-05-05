@@ -25,7 +25,11 @@ local buttons = {
     x=21,
     y=20,
     func = function()
-      print("Kaufen")
+      local stack = itemt.getStackInSlot(itemtSides.hopper,1)
+      if(stack ~= nil) then
+        itemt.transferItem(itemtSides.hopper, itemtSides.chest, items[selectedItem].cost.amount)
+        itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size)
+      end
     end
   },
   [2] = {
