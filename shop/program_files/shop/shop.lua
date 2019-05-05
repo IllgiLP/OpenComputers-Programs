@@ -33,6 +33,7 @@ local gpu = nil
 local update = function()
   local stack = itemt.getStackInSlot(itemtSides.hopper,1)
   local x,y = gpu.getResolution()
+  gpu.setBackground(0x000000)
   gpu.fill(1,1,x,y," ")
 
   if(stack == nil) then
@@ -45,7 +46,7 @@ local update = function()
     gpu.setBackground(0x000000)
     if not ((stack.name == v.cost.type) and (stack.size >= v.cost.amount)) then
       gpu.setBackground(0xFF0000)
-      gpu.fill(1,k,screen.w,k," ")
+      gpu.fill(1,k,screen.w,1," ")
     end
     gpu.set(1,k,string.format("[%s] %s",(selectedItem == k and "X" or " "), v.name))
 
@@ -73,8 +74,6 @@ local task = function()
   local ok, msg = xpcall(update)
   if not (ok) then
     print("Error: "..msg)
-  else
-    print("OK")
   end
 end
 
