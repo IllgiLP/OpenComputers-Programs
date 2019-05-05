@@ -84,15 +84,18 @@ local update = function()
 
   gpu.fill(1,18,40,1,"_")
 
-  if(money[stack.name] ~= nil) then
-    local costString = stack.size.." "..money[stack.name].short
+  local costString = "Eingeworfen: "
 
+  if(money[stack.name] ~= nil) then
+    costString = costString..stack.size.." "..money[stack.name].short
     gpu.setForeground(money[stack.name].color)
-    gpu.set((screen.w)-(#costString+1),19,costString)
-    gpu.setForeground(0xFFFFFF)
   else
+    costString = costString.."-"
     itemt.transferItem(itemtSides.hopper, itemtSides.dispenser, stack.size, 1, 1)
   end
+
+  gpu.set((screen.w)-(#costString+1),19,costString)
+  gpu.setForeground(0xFFFFFF)
 
   for k,v in pairs(buttons) do
     gpu.set(v.x,v.y,v.name)
